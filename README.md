@@ -1,2 +1,5 @@
-# code-anchor
-vscode extension for eating glass on solana using anchor sdk
+# vscode-anchor
+
+vscode extension for Anchor (Solana's Sealevel runtime Framework).
+
+Coming soon.
