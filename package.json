@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-anchor.helloWorld"
+    "onCommand:vscode-anchor.helloWorld",
+    "workspaceContains:**/Anchor.toml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
