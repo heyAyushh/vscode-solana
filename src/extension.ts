@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
-import installAnchor from "./helpers/install";
+import checkInstallAnchor from "./helpers/install";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "vscode-anchor" is now active!');
 
-  installAnchor();
+  checkInstallAnchor();
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand

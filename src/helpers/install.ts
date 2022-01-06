@@ -3,7 +3,7 @@ import { exec } from "child_process";
 
 // check anchor version
 // ask for installation if not installed
-export default function installAnchor() {
+export default function checkInstallAnchor() {
   return exec("anchor --version", (error, stdout, stderr) => {
     if (error) {
       // if anchor is not installed
