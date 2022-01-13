@@ -1,9 +1,12 @@
 # Change Log
 
-All notable changes to the "vscode-anchor" extension will be documented in this file.
+All notable changes to the 'vscode-anchor' extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
+## [Unreleased] - Version 0.1.0
+### Added
 
 - Initialised extension
+- Scaffolded Structure
+- CODE_OF_CONDUCT
+- pull_request_template
+- README.md (donate and contributions)
