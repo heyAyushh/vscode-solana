@@ -1,8 +1,9 @@
 {
   "name": "vscode-anchor",
   "displayName": "anchor",
+  "publisher": "heyAyushh",
   "description": "vscode extension for Anchor (Solana's Sealevel runtime Framework)",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.63.0"
   },
@@ -20,14 +21,15 @@
         {
           "id": "vscode-anchor-view",
           "title": "Anchor",
-          "icon": "static/anchor-icon.svg"
+          "icon": "static/anchor-wave.svg"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "vscode-anchor-view",
-        "contents": "No node dependencies found [learn more](https://www.npmjs.com/).\n[Add Dependency](command:nodeDependencies.addEntry)"
+        "view": "vscode-anchor-view-programs",
+        "contents": "You are not in an Anchor Project.\n[Scaffold new Anchor Project](command:vscode-anchor.scaffold)\n \n If you've scaffolded or have existing Anchor Project \n[Open Anchor Project](command:vscode.openFolder)",
+        "when": "!workspaceContains:**/Anchor.toml"
       }
     ],
     "views": {
@@ -44,8 +46,46 @@
     },
     "commands": [
       {
-        "command": "vscode-anchor.helloWorld",
-        "title": "Anchor: Hello World"
+        "command": "vscode-anchor.build",
+        "title": "Anchor: Build"
+      },
+      {
+        "command": "vscode-anchor.buildVerifiable",
+        "title": "Anchor: Build Verifiable"
+      },
+      {
+        "command": "vscode-anchor.deploy",
+        "title": "Anchor: Deploy"
+      },
+      {
+        "command": "vscode-anchor.new",
+        "title": "Anchor: New Program (in same workspace)"
+      },
+      {
+        "command": "vscode-anchor.removeDockerImage",
+        "title": "Anchor: remove Docker Image (in new workspace)"
+      },
+      {
+        "command": "vscode-anchor.scaffold",
+        "title": "Anchor: Initialize"
+      },
+      {
+        "command": "vscode-anchor.test",
+        "title": "Anchor: Test"
+      },
+      {
+        "command": "vscode-anchor.upgrade",
+        "title": "Anchor: Upgrade (use Solana's upgradeable BPF loader to upgrade the onchain program code)"
+      },
+      {
+        "command": "vscode-anchor.verify",
+        "title": "Anchor: Verify (on-chain bytecode with locally compiled artifact)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vscode-anchor.build",
+        "key": "Ctrl+Alt+B"
       }
     ]
   },
@@ -57,7 +97,7 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint src --ext ts --fix",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
@@ -75,5 +115,8 @@
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0",
     "@vscode/test-electron": "^1.6.2"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.31.0"
   }
 }
