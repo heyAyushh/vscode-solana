@@ -1,52 +1,44 @@
 import * as vscode from "vscode";
-import { exec } from "child_process";
+import chan from "./outputChannel";
+import { execShell, spawnChan } from "./spawnExec";
+import * as os from 'os';
 
-// check anchor version
-// ask for installation if not installed
-export default function checkInstallAnchor() {
-  return exec("anchor --version", (error, stdout, stderr) => {
-    if (error) {
-      // if anchor is not installed
-      if (error?.message?.includes("not found")) {
-        // ask user to install anchor
-        vscode.window
-          .showWarningMessage(
-            "Anchor CLI was not found!",
-            "Install it",
-            "Ignoreuwu"
-          )
-          .then((selection) => {
-            if (selection === "Install it") {
-              // add progress notification
-              vscode.window.withProgress({
-                location: vscode.ProgressLocation.Notification,
-                title: "Installing Anchor ⚓ CLI...",
-                cancellable: false
-              }, (progress, token) => {
-                const p = new Promise<void>(
-                  resolve => {
-                    setTimeout(() =>
-                      exec("npm i -g @project-serum/anchor-cli",
-                        (error, stdout, stderr) => {
-                          if (error) {
-                            console.error(`exec error: ${error}`);
-                          }
-                          resolve();
-                        }),
-                      5000
-                    );
-                  }
-                );
-
-                return p;
-              });
-            }
-          });
-      }
-
-      return;
+export const installAnchor = async () => {
+  vscode.window.withProgress({
+    location: vscode.ProgressLocation.Notification,
+    title: "Installing Anchor ⚓ CLI...",
+    cancellable: false
+  }, async (progress, token) => {
+    if (os.arch() === 'x64' && os.type() === 'Linux') {
+      spawnChan('npm i -g @project-serum/anchor-cli', 'install');
+    } else {
+      spawnChan('cargo install --git https://github.com/project-serum/anchor --tag v0.20.1 anchor-cli --locked',
+        'build anchor cli from source');
     }
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
   });
+};
+
+export default async function checkInstallAnchor() {
+  try {
+    await execShell('anchor --version');
+  } catch (err) {
+    // if anchor is not installed
+    if (err instanceof Error && err?.message?.includes("not found")) {
+      // ask user to install anchor
+      const selection = await vscode
+        .window
+        .showWarningMessage(
+          "Anchor CLI was not found!",
+          "Install it",
+          "Ignuwu"
+        );
+
+      if (selection === "Install it") {
+        installAnchor();
+      } else {
+        chan.appendLine("Anchor CLI was not found and not Installed! ngmi");
+        chan.show(true);
+      };
+    }
+  }
 }
