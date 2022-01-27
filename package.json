@@ -11,7 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-anchor.helloWorld",
+    "onCommand:vscode-anchor.scaffold",
     "workspaceContains:**/Anchor.toml"
   ],
   "main": "./dist/extension.js",
@@ -58,6 +58,10 @@
         "title": "Anchor: Deploy"
       },
       {
+        "command": "vscode-anchor.install",
+        "title": "Anchor: Install CLI"
+      },
+      {
         "command": "vscode-anchor.new",
         "title": "Anchor: New Program (in same workspace)"
       },
@@ -80,8 +84,113 @@
       {
         "command": "vscode-anchor.verify",
         "title": "Anchor: Verify (on-chain bytecode with locally compiled artifact)"
+      },
+      {
+        "command": "vscode-anchor.logsClear",
+        "title": "Anchor: Clear channel logs"
+      },
+      {
+        "command": "vscode-anchor.logsShow",
+        "title": "Anchor: Show output channel logs"
+      },
+      {
+        "command": "vscode-anchor-view-programs.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "static/light/refresh.svg",
+          "dark": "static/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "vscode-anchor-view-programs.addEntry",
+        "title": "Add",
+        "icon": {
+          "light": "static/light/add.svg",
+          "dark": "static/dark/add.svg"
+        }
+      },
+      {
+        "command": "vscode-anchor-view-programs.editEntry",
+        "title": "Edit",
+        "icon": {
+          "light": "static/light/edit.svg",
+          "dark": "static/dark/edit.svg"
+        }
+      },
+      {
+        "command": "vscode-anchor-view-programs.build",
+        "title": "Build Programs",
+        "icon": {
+          "light": "static/light/build.svg",
+          "dark": "static/dark/build.svg"
+        }
+      },
+      {
+        "command": "vscode-anchor-view-tests.test",
+        "title": "Start Tests",
+        "icon": {
+          "light": "static/light/beaker.svg",
+          "dark": "static/dark/beaker.svg"
+        }
+      },
+      {
+        "command": "vscode-anchor-view-tests.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "static/light/refresh.svg",
+          "dark": "static/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "vscode-anchor-view-tests.editEntry",
+        "title": "Edit",
+        "icon": {
+          "light": "static/light/edit.svg",
+          "dark": "static/dark/edit.svg"
+        }
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "vscode-anchor-view-programs.refreshEntry",
+          "when": "view == vscode-anchor-view-programs",
+          "group": "navigation"
+        },
+        {
+          "command": "vscode-anchor-view-programs.addEntry",
+          "when": "view == vscode-anchor-view-programs",
+          "group": "navigation"
+        },
+        {
+          "command": "vscode-anchor-view-programs.build",
+          "when": "view == vscode-anchor-view-programs",
+          "group": "navigation"
+        },
+        {
+          "command": "vscode-anchor-view-tests.refreshEntry",
+          "when": "view == vscode-anchor-view-tests",
+          "group": "navigation"
+        },
+        {
+          "command": "vscode-anchor-view-tests.test",
+          "when": "view == vscode-anchor-view-tests",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vscode-anchor-view-programs.editEntry",
+          "when": "view == vscode-anchor-view-programs && viewItem == program",
+          "group": "inline"
+        },
+        {
+          "command": "vscode-anchor-view-tests.editEntry",
+          "when": "view == vscode-anchor-view-tests && viewItem == test",
+          "group": "inline"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "vscode-anchor.build",
@@ -101,22 +210,23 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.63.0",
     "@types/glob": "^7.1.4",
     "@types/mocha": "^9.0.0",
     "@types/node": "14.x",
+    "@types/vscode": "^1.63.0",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
+    "@vscode/test-electron": "^1.6.2",
     "eslint": "^8.1.0",
     "glob": "^7.1.7",
     "mocha": "^9.1.3",
-    "typescript": "^4.4.4",
     "ts-loader": "^9.2.5",
+    "typescript": "^4.4.4",
     "webpack": "^5.52.1",
-    "webpack-cli": "^4.8.0",
-    "@vscode/test-electron": "^1.6.2"
+    "webpack-cli": "^4.8.0"
   },
   "dependencies": {
+    "@ltd/j-toml": "^1.24.0",
     "@solana/web3.js": "^1.31.0"
   }
 }
