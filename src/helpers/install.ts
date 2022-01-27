@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import chan from "./outputChannel";
 import { execShell, spawnChan } from "./spawnExec";
+import * as os from 'os';
 
 export const installAnchor = async () => {
   vscode.window.withProgress({
@@ -8,7 +9,12 @@ export const installAnchor = async () => {
     title: "Installing Anchor ⚓ CLI...",
     cancellable: false
   }, async (progress, token) => {
-    spawnChan('npm i -g @project-serum/anchor-cli', 'install');
+    if (os.arch() === 'x64' && os.type() === 'Linux') {
+      spawnChan('npm i -g @project-serum/anchor-cli', 'install');
+    } else {
+      spawnChan('cargo install --git https://github.com/project-serum/anchor --tag v0.20.1 anchor-cli --locked',
+        'build anchor cli from source');
+    }
   });
 };
 

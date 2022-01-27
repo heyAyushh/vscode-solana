@@ -38,15 +38,16 @@ export const spawnChan = (cmd: string, registeredAs: string) => {
       chan.append(`[INFO : ${new Date().toLocaleTimeString()}] ${data}`);
     });
 
-    cexe.stderr.on('data', (data: unknown) => {
+    cexe.stderr.on('data', (data: string) => {
       if (!errorNotifiedFlag) {
         errorNotifiedFlag = true;
+        chan.append(`[ERROR : ${new Date().toLocaleTimeString()}] ${data}`);
       }
-      chan.append(`[ERROR : ${new Date().toLocaleTimeString()}] ${data}`);
+      chan.append(`${data}`);
     });
 
     cexe.on('close', (code: unknown) => {
-      if (!errorNotifiedFlag && code === 0) {
+      if (!errorNotifiedFlag || code === 0) {
         vscode.window.showInformationMessage(`Anchor ⚓: ${registeredAs} completed!`);
       } else {
         chan.show(true);
