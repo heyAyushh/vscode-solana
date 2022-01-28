@@ -10,6 +10,10 @@ vscode extension for Anchor (Solana's Sealevel runtime Framework).
 - Install the extension from the [marketplace](https://marketplace.visualstudio.com/items?itemName=Ayushh.vscode-anchor)  
 - Press ```⌘ + shift + p``` or ```ctrl + shift + p``` to open command panel and search for 'Anchor:'  
 - Check program and tests view inside container, click on anchor logo to focus.
+
+## Features
+- Anchor commands
+- Program View and Test View in panel
 ## Requirements
 - VSCode ^1.63.0 [install](https://code.visualstudio.com/download)
 - Rust   ^1.42.0 [install](https://rustup.rs)
@@ -24,11 +28,6 @@ vscode extension for Anchor (Solana's Sealevel runtime Framework).
 - Follow Me on [Twitter](https://twitter.com/heyayushh) for vscode-anchor related updates.  
 
 -  Donàte USDC or SOL to ```dedo.sol``` suppowt actiiive deweplopment of this extension. 
-
-## Donate 
-
-Arigato Senséi for visting here.
-Donàte USDC or SOL to suppowt actiiive deweplopment of this extension. 
 
 ## Contributing
 
