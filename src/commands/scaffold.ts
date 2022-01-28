@@ -1,4 +1,4 @@
-import { execShell, spawnChan } from "../helpers/spawnExec";
+import { spawnChan } from "../helpers/spawnExec";
 import * as vscode from 'vscode';
 import { EXT_NAME } from "../config";
 import chan from "../helpers/outputChannel";
@@ -27,9 +27,9 @@ const anchorInit = () => vscode.commands.registerCommand(
     if (item && name) {
       if (item === 'init (default)') {
         spawnChan(`anchor init ${name}`, 'Scaffolding Anchor Project');
-      } else if ('Synthetify/solana-template') {
+      } else if (item === 'Synthetify/solana-template') {
         try {
-          await execShell(`git clone https://github.com/${item} ${name} && rm -rf ${name}/.git`);
+          spawnChan(`npx degit https://github.com/${item} ${name}`, 'Scaffolding Anchor Project');
           vscode.window.showInformationMessage(`Anchor ⚓: init Synthetify template completed!`);
         } catch (err) {
           vscode.window.showErrorMessage(`Anchor ⚓: init Synthetify template faled!`);

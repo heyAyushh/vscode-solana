@@ -33,7 +33,7 @@ export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
       if (this.pathExists(programsPath)) {
         return Promise.resolve(this.getProgramItems(programsPath));
       } else {
-        vscode.window.showInformationMessage('Workspace has no programs folder');
+        // vscode.window.showInformationMessage('Workspace has no programs folder');
         return Promise.resolve([]);
       }
     }

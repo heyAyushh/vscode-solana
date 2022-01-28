@@ -1,9 +1,23 @@
 {
   "name": "vscode-anchor",
-  "displayName": "anchor",
-  "publisher": "heyAyushh",
+  "displayName": "Anchor",
+  "publisher": "Ayushh",
   "description": "vscode extension for Anchor (Solana's Sealevel runtime Framework)",
-  "version": "0.1.2",
+  "version": "0.2.2",
+  "icon": "static/marketplace-logo.png",
+  "homepage": "https://github.com/microsoft/vscode-anchor/blob/main/README.md",
+  "galleryBanner": {
+    "color": "#1d1d1d",
+    "theme": "dark"
+  },
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/heyAyushh/vscode-anchor"
+	},
+  "bugs": {
+    "url": "https://github.com/heyAyushh/vscode-anchor/issues",
+    "email": "heyayush@live.com"
+  },
   "engines": {
     "vscode": "^1.63.0"
   },

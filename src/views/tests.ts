@@ -32,7 +32,7 @@ export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
       if (this.pathExists(testsPath)) {
         return Promise.resolve(this.getTestItems(testsPath));
       } else {
-        vscode.window.showInformationMessage('Workspace has no tests folder');
+        // vscode.window.showInformationMessage('Workspace has no tests folder');
         return Promise.resolve([]);
       }
     }
