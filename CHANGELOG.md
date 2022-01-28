@@ -2,7 +2,7 @@
 
 All notable changes to the 'vscode-anchor' extension will be documented in this file.
 
-## Version 0.2.0 [current]
+## Version 0.2.2 [current]
 ### Added
 - Anchor cli commands to vscode.
 - Install anchor cli if not found.
