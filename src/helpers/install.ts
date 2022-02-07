@@ -10,9 +10,9 @@ export const installAnchor = async () => {
     cancellable: false
   }, async (progress, token) => {
     if (os.arch() === 'x64' && os.type() === 'Linux') {
-      spawnChan('npm i -g @project-serum/anchor-cli', 'install');
+      spawnChan('npm',['i', '-g', '@project-serum/anchor-cli'], 'install');
     } else {
-      spawnChan('cargo install --git https://github.com/project-serum/anchor --tag v0.20.1 anchor-cli --locked',
+      spawnChan('cargo', ['install', '--git', 'https://github.com/project-serum/anchor', '--tag', 'v0.20.1', 'anchor-cli', '--locked'],
         'build anchor cli from source');
     }
   });

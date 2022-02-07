@@ -17,7 +17,7 @@ const anchorNew = () => vscode.commands.registerCommand(
         title: "Creating new Anchor ⚓ Program ...",
         cancellable: false
       }, async (progress, token) => {
-        spawnChan(`anchor new ${name}`, 'new program');
+        spawnChan(`anchor`, ['new', name], 'new program');
       });
     }
   }

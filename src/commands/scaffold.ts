@@ -26,10 +26,10 @@ const anchorInit = () => vscode.commands.registerCommand(
 
     if (item && name) {
       if (item === 'init (default)') {
-        spawnChan(`anchor init ${name}`, 'Scaffolding Anchor Project');
+        spawnChan(`anchor`, ['init', name], 'Scaffolding Anchor Project');
       } else if (item === 'Synthetify/solana-template') {
         try {
-          spawnChan(`npx degit https://github.com/${item} ${name}`, 'Scaffolding Anchor Project');
+          spawnChan(`npx`, ['degit', `https://github.com/${item}`, name], 'Scaffolding Anchor Project');
           vscode.window.showInformationMessage(`Anchor ⚓: init Synthetify template completed!`);
         } catch (err) {
           vscode.window.showErrorMessage(`Anchor ⚓: init Synthetify template faled!`);

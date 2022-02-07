@@ -10,7 +10,7 @@ const anchorTest = () => vscode.commands.registerCommand(
       title: "Anchor ⚓: Starting Tests...",
       cancellable: false
     }, async (progress, token) => {
-      spawnChan('anchor test', 'test');
+      spawnChan('anchor',['test'], 'test');
     });
   }
 );
