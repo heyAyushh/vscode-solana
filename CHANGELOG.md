@@ -1,14 +1,23 @@
 # Change Log
-
-All notable changes to the 'vscode-anchor' extension will be documented in this file.
-
-## Version 0.2.2 [current]
-### Added
+  
+All notable changes to the 'vscode-anchor' extension will be documented in this file.  
+  
+## Version 0.2.3 [current]  
+### Added  
+- Added Help Commands to your favourite docs site.
+- Analyze your code with Soteria, Cargo Audit, and clippy.
+- Fixed Build Verifiable Command.  
+  
+---  
+## Version 0.2.2  
+### Added  
 - Anchor cli commands to vscode.
 - Install anchor cli if not found.
-- Anchor container view with programs and tests.
-## Version 0.1.0 
-### Added
+- Anchor container view with programs and tests.  
+
+---
+## Version 0.1.0  
+### Added  
 
 - Initialised extension
 - Scaffolded Structure

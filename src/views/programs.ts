@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getDirectories } from "../helpers/util";
 import toml from '@ltd/j-toml';
+import { anchorBuildVerifiableItem } from "../commands/build";
 
 export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
 
@@ -118,6 +119,7 @@ export const registerProgramView = () => {
   vscode.commands.registerCommand('vscode-anchor-view-programs.refreshEntry', () => programsProvider.refresh());
   vscode.commands.registerCommand('vscode-anchor-view-programs.addEntry', () => vscode.commands.executeCommand('vscode-anchor.new'));
   vscode.commands.registerCommand('vscode-anchor-view-programs.build', () => vscode.commands.executeCommand('vscode-anchor.build'));
+  vscode.commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
   // @ts-expect-error
   vscode.commands.registerCommand('vscode-anchor-view-programs.editEntry', (prg: ProgramItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'programs', prg.label, 'src', 'lib.rs')));
 };

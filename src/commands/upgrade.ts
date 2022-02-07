@@ -13,7 +13,7 @@ const anchorUpgrade = () => vscode.commands.registerCommand(
       .window
       .showInputBox({
         value: 'target/deploy/program.so',
-        placeHolder: 'Enter path to the program from project root : ./folder/target',
+        placeHolder: 'Enter path to the Program from project root : ./folder/target',
       });
     if (!path) {
       return;
@@ -33,7 +33,7 @@ const anchorUpgrade = () => vscode.commands.registerCommand(
       title: "Upgrading on chain Anchor ⚓ Program ...",
       cancellable: false
     }, async (progress, token) => {
-      spawnChan(`anchor upgrade ${path} --program-id ${id}`, 'upgrade');
+      spawnChan(`anchor`, ['upgrade', path, '--program-id', id], 'upgrade');
     });
   }
 );

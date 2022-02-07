@@ -5,7 +5,7 @@ import { EXT_NAME } from "../config";
 const anchorVerify = () => vscode.commands.registerCommand(
   `${EXT_NAME}.verify`,
   async () => {
-    const result = await vscode.window.showInputBox({
+    const programId = await vscode.window.showInputBox({
       placeHolder: 'Enter program id: C14Gs3oyeXbASzwUpqSymCKpEyccfEuSe8VRar9vJQRE',
       validateInput: async (text) => {
         return text.length !== 44 ?
@@ -13,8 +13,8 @@ const anchorVerify = () => vscode.commands.registerCommand(
           : null;
       }
     });
-    if (result) {
-      spawnChan(`anchor verify ${result}`, 'Verify');
+    if (programId) {
+      spawnChan(`anchor`,['verify', programId], 'Verify');
     }
   }
 );

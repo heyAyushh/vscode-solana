@@ -10,7 +10,7 @@ const anchorDeploy = () => vscode.commands.registerCommand(
       title: "Deploying Anchor ⚓ Program ...",
       cancellable: false
     }, async (progress, token) => {
-      spawnChan('anchor deploy', 'deploy');
+      spawnChan('anchor', ['deploy'], 'deploy');
     });
   }
 );

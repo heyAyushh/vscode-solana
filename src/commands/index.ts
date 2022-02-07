@@ -6,11 +6,15 @@ import { anchorNew } from "./new";
 import { anchorDeploy } from "./deploy";
 import { anchorInstall } from "./install";
 import { anchorUpgrade } from "./upgrade";
+import { anchorAnalyze } from "./analyze";
+import { anchorHelp } from "./help";
 
 const commands = [
+  anchorAnalyze(),
   anchorBuild(),
   anchorBuildVerifiable(),
   anchorDeploy(),
+  anchorHelp(),
   anchorInit(),
   anchorInstall(),
   anchorNew(),
