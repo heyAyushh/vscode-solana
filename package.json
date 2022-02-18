@@ -211,8 +211,7 @@
       "view/item/context": [
         {
           "command": "vscode-anchor-view-programs.editEntry",
-          "when": "view == vscode-anchor-view-programs && viewItem == program",
-          "group": "inline"
+          "when": "view == vscode-anchor-view-programs && viewItem == program"
         },
         {
           "command": "vscode-anchor-view-programs.buildVerifiableItem",
@@ -221,8 +220,7 @@
         },
         {
           "command": "vscode-anchor-view-tests.editEntry",
-          "when": "view == vscode-anchor-view-tests && viewItem == test",
-          "group": "inline"
+          "when": "view == vscode-anchor-view-tests && viewItem == test"
         }
       ]
     },

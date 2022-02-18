@@ -44,11 +44,11 @@ export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
    */
   private getTestItems(testsPath: string): TestItem[] {
     if (this.pathExists(testsPath)) {
-      const tests = getFiles(testsPath, '.(spec|test).[jt]s');
+      const tests = getFiles(testsPath, '.(spec|test)?.[jtr]s');
 
       const toTst = (tstName: string): TestItem => {
         return new TestItem(tstName, vscode.TreeItemCollapsibleState.None, {
-          command: '',
+          command: 'vscode-anchor-view-tests.editEntry',
           title: '',
           arguments: [tstName]
         });
@@ -104,6 +104,7 @@ export const registerTestView = () => {
     vscode.commands.registerCommand('vscode-anchor-view-tests.refreshEntry', () => testsProvider.refresh());
     vscode.commands.registerCommand('vscode-anchor-view-tests.test', () => vscode.commands.executeCommand(`vscode-anchor.test`));
     // @ts-expect-error
-    vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (node: TestItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', node.fileName)));
+    vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (fileName: string) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', fileName)));
+    // vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (node: TestItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', node.fileName)));
   }
 };
