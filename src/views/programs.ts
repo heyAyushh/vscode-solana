@@ -61,7 +61,7 @@ export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
 
       const toPrgm = (moduleName: string, version: string): ProgramItem => {
         return new ProgramItem(moduleName, version, vscode.TreeItemCollapsibleState.None, {
-          command: '',
+          command: 'vscode-anchor-view-programs.editEntry',
           title: '',
           arguments: [moduleName]
         });
@@ -121,5 +121,5 @@ export const registerProgramView = () => {
   vscode.commands.registerCommand('vscode-anchor-view-programs.build', () => vscode.commands.executeCommand('vscode-anchor.build'));
   vscode.commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
   // @ts-expect-error
-  vscode.commands.registerCommand('vscode-anchor-view-programs.editEntry', (prg: ProgramItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'programs', prg.label, 'src', 'lib.rs')));
+  vscode.commands.registerCommand('vscode-anchor-view-programs.editEntry', (prgName: string) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'programs', prgName, 'src', 'lib.rs')));
 };
