@@ -3,7 +3,7 @@
   "displayName": "Anchor",
   "publisher": "Ayushh",
   "description": "vscode extension for Anchor (Solana's Sealevel runtime Framework)",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "icon": "assets/marketplace-logo.png",
   "homepage": "https://github.com/microsoft/vscode-anchor/blob/main/README.md",
   "galleryBanner": {
