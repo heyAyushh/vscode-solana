@@ -15,6 +15,20 @@ const anchorTest = () => vscode.commands.registerCommand(
   }
 );
 
+const anchorTestLocalValidator = () => vscode.commands.registerCommand(
+  `${EXT_NAME}.testAgainstLocalValidator`,
+  async () => {
+    vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: "Anchor ⚓: Starting Tests against local validator...",
+      cancellable: false
+    }, async (progress, token) => {
+      await spawnChan('anchor',['test', '--skip-local-validator'], 'test');
+    });
+  }
+);
+
 export {
   anchorTest,
+  anchorTestLocalValidator
 };

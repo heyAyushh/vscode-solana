@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { spawn } from "./promisify_child_process";
 import { WORKSPACE_PATH } from "../config";
 import * as vscode from "vscode";
-import chan from "./outputChannel";
+import chan, { appendChan } from "./outputChannel";
 
 /**
 * probably here to be obselete who knows?
@@ -30,7 +30,7 @@ export const execShell = (cmd: string) =>
 export const spawnChan = async (
   cmd: string,
   args: string[],
-  registeredAs: string,
+  registeredAs?: string,
   cwd: string = WORKSPACE_PATH(),
   quiet: boolean = false
 ) => {
@@ -72,7 +72,8 @@ export const spawnChan = async (
     return cexe;
   } catch (err) {
     if (err instanceof Error) {
-      vscode.window.showErrorMessage(err.message);
+      // vscode.window.showErrorMessage(err.message);
+      appendChan('ERROR', err.message);
     };
   }
 };

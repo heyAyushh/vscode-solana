@@ -1,14 +1,19 @@
-import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
+import {
+  TreeDataProvider,
+  EventEmitter, Event, TreeItem,
+  window, TreeItemCollapsibleState,
+  Command, commands, workspace
+} from 'vscode';
+import { readFileSync, accessSync } from 'fs';
+import { join } from 'path';
 import { getDirectories } from "../helpers/util";
-import toml from '@ltd/j-toml';
+import { parse } from '@ltd/j-toml';
 import { anchorBuildVerifiableItem } from "../commands/build";
 
-export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
+export class ProgramsProvider implements TreeDataProvider<ProgramItem> {
 
-  private _onDidChangeTreeData: vscode.EventEmitter<ProgramItem | undefined | void> = new vscode.EventEmitter<ProgramItem | undefined | void>();
-  readonly onDidChangeTreeData: vscode.Event<ProgramItem | undefined | void> = this._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: EventEmitter<ProgramItem | undefined | void> = new EventEmitter<ProgramItem | undefined | void>();
+  readonly onDidChangeTreeData: Event<ProgramItem | undefined | void> = this._onDidChangeTreeData.event;
 
   constructor(private workspaceRoot: string | undefined) {
   }
@@ -17,24 +22,24 @@ export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: ProgramItem): vscode.TreeItem {
+  getTreeItem(element: ProgramItem): TreeItem {
     return element;
   }
 
   getChildren(element?: ProgramItem): Thenable<ProgramItem[]> {
     if (!this.workspaceRoot) {
-      vscode.window.showInformationMessage('No programs in empty workspace');
+      window.showInformationMessage('No programs in empty workspace');
       return Promise.resolve([]);
     }
 
     if (element) {
       return Promise.resolve([]);
     } else {
-      const programsPath = path.join(this.workspaceRoot, 'programs');
+      const programsPath = join(this.workspaceRoot, 'programs');
       if (this.pathExists(programsPath)) {
         return Promise.resolve(this.getProgramItems(programsPath));
       } else {
-        // vscode.window.showInformationMessage('Workspace has no programs folder');
+        // window.showInformationMessage('Workspace has no programs folder');
         return Promise.resolve([]);
       }
     }
@@ -48,8 +53,8 @@ export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
     if (this.pathExists(programsPath)) {
       const programs = getDirectories(programsPath);
       const programsV = programs.map(program => {
-        const cargoToml = toml.parse(
-          fs.readFileSync(path.join(programsPath, program, 'Cargo.toml'), 'utf-8')
+        const cargoToml = parse(
+          readFileSync(join(programsPath, program, 'Cargo.toml'), 'utf-8')
         ) as Record<string, Record<string, string>>;
 
         return {
@@ -60,8 +65,8 @@ export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
       });
 
       const toPrgm = (moduleName: string, version: string): ProgramItem => {
-        return new ProgramItem(moduleName, version, vscode.TreeItemCollapsibleState.None, {
-          command: '',
+        return new ProgramItem(moduleName, version, TreeItemCollapsibleState.None, {
+          command: 'vscode-anchor-view-programs.editEntry',
           title: '',
           arguments: [moduleName]
         });
@@ -78,7 +83,7 @@ export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
 
   private pathExists(p: string): boolean {
     try {
-      fs.accessSync(p);
+      accessSync(p);
     } catch (err) {
       return false;
     }
@@ -87,13 +92,13 @@ export class ProgramsProvider implements vscode.TreeDataProvider<ProgramItem> {
   }
 }
 
-export class ProgramItem extends vscode.TreeItem {
+export class ProgramItem extends TreeItem {
 
   constructor(
     public readonly label: string,
     private readonly version: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly command?: vscode.Command
+    public readonly collapsibleState: TreeItemCollapsibleState,
+    public readonly command?: Command
   ) {
     super(label, collapsibleState);
 
@@ -102,24 +107,24 @@ export class ProgramItem extends vscode.TreeItem {
   }
 
   // iconPath = {
-  //   light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-  //   dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
+  //   light: join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
+  //   dark: join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
   // };
 
   contextValue = 'program';
 }
 
 export const registerProgramView = () => {
-  const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
-    ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
+  const rootPath = (workspace.workspaceFolders && (workspace.workspaceFolders.length > 0))
+    ? workspace.workspaceFolders[0].uri.fsPath : undefined;
 
   const programsProvider = new ProgramsProvider(rootPath);
 
-  vscode.window.registerTreeDataProvider('vscode-anchor-view-programs', programsProvider);
-  vscode.commands.registerCommand('vscode-anchor-view-programs.refreshEntry', () => programsProvider.refresh());
-  vscode.commands.registerCommand('vscode-anchor-view-programs.addEntry', () => vscode.commands.executeCommand('vscode-anchor.new'));
-  vscode.commands.registerCommand('vscode-anchor-view-programs.build', () => vscode.commands.executeCommand('vscode-anchor.build'));
-  vscode.commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
+  window.registerTreeDataProvider('vscode-anchor-view-programs', programsProvider);
+  commands.registerCommand('vscode-anchor-view-programs.refreshEntry', () => programsProvider.refresh());
+  commands.registerCommand('vscode-anchor-view-programs.addEntry', () => commands.executeCommand('vscode-anchor.new'));
+  commands.registerCommand('vscode-anchor-view-programs.build', () => commands.executeCommand('vscode-anchor.build'));
+  commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
   // @ts-expect-error
-  vscode.commands.registerCommand('vscode-anchor-view-programs.editEntry', (prg: ProgramItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'programs', prg.label, 'src', 'lib.rs')));
+  commands.registerCommand('vscode-anchor-view-programs.editEntry', (prgName: string) => commands.executeCommand('open', Uri.joinPath(workspace.workspaceFolders[0].uri, 'programs', prgName, 'src', 'lib.rs')));
 };

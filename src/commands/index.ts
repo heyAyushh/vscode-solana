@@ -1,5 +1,5 @@
 import { anchorBuild, anchorBuildVerifiable, anchorRemoveDockerImage } from "./build";
-import { anchorTest } from "./test";
+import { anchorTest, anchorTestLocalValidator } from "./test";
 import { anchorVerify } from "./verify";
 import { anchorInit } from "./scaffold";
 import { anchorNew } from "./new";
@@ -20,6 +20,7 @@ const commands = [
   anchorNew(),
   anchorRemoveDockerImage(),
   anchorTest(),
+  anchorTestLocalValidator(),
   anchorUpgrade(),
   anchorVerify(),
 ];
