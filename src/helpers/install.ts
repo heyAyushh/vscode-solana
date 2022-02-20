@@ -1,26 +1,11 @@
 import * as vscode from "vscode";
-import chan from "./outputChannel";
-import { execShell, spawnChan } from "./spawnExec";
-import * as os from 'os';
-
-export const installAnchor = async () => {
-  vscode.window.withProgress({
-    location: vscode.ProgressLocation.Notification,
-    title: "Installing Anchor ⚓ CLI...",
-    cancellable: false
-  }, async (progress, token) => {
-    if (os.arch() === 'x64' && os.type() === 'Linux') {
-      spawnChan('npm',['i', '-g', '@project-serum/anchor-cli'], 'install');
-    } else {
-      spawnChan('cargo', ['install', '--git', 'https://github.com/project-serum/anchor', '--tag', 'v0.20.1', 'anchor-cli', '--locked'],
-        'build anchor cli from source');
-    }
-  });
-};
+import chan, { appendChan } from "./outputChannel";
+import { spawnChan } from "./spawnExec";
+import { checkAvm, installAnchorUsingAvm, installAvm } from "./avm";
 
 export default async function checkInstallAnchor() {
   try {
-    await execShell('anchor --version');
+    await spawnChan('anchor', ['--version'], 'anchor version', '', true);
   } catch (err) {
     // if anchor is not installed
     if (err instanceof Error && err?.message?.includes("not found")) {
@@ -34,7 +19,20 @@ export default async function checkInstallAnchor() {
         );
 
       if (selection === "Install it") {
-        installAnchor();
+        try {
+          try {
+            await checkAvm();
+          } catch (err) {
+            appendChan('INFO', `Installing Anchor version manager...`);
+            await installAvm();
+          }
+          await installAnchorUsingAvm();
+        } catch (err) {
+          if (err instanceof Error) {
+            chan.appendLine(err.message);
+            chan.show(true);
+          };
+        }
       } else {
         chan.appendLine("Anchor CLI was not found and not Installed! ngmi");
         chan.show(true);

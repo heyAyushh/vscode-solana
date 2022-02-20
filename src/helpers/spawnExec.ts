@@ -30,7 +30,7 @@ export const execShell = (cmd: string) =>
 export const spawnChan = async (
   cmd: string,
   args: string[],
-  registeredAs: string,
+  registeredAs?: string,
   cwd: string = WORKSPACE_PATH(),
   quiet: boolean = false
 ) => {
