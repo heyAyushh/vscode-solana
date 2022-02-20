@@ -100,6 +100,10 @@
         "title": "Anchor: Test"
       },
       {
+        "command": "vscode-anchor.testAgainstLocalValidator",
+        "title": "Anchor: Test against local validator"
+      },
+      {
         "command": "vscode-anchor.upgrade",
         "title": "Anchor: Upgrade (use Solana's upgradeable BPF loader to upgrade the onchain program code)"
       },
@@ -178,6 +182,14 @@
           "light": "assets/light/edit.svg",
           "dark": "assets/dark/edit.svg"
         }
+      },
+      {
+        "command": "vscode-anchor-view-tests.skipLocalValidator",
+        "title": "Start test with local-validator",
+        "icon": {
+          "light": "assets/light/local_validator.svg",
+          "dark": "assets/dark/local_validator.svg"
+        }
       }
     ],
     "menus": {
@@ -204,6 +216,11 @@
         },
         {
           "command": "vscode-anchor-view-tests.test",
+          "when": "view == vscode-anchor-view-tests",
+          "group": "navigation"
+        },
+        {
+          "command": "vscode-anchor-view-tests.skipLocalValidator",
           "when": "view == vscode-anchor-view-tests",
           "group": "navigation"
         }
