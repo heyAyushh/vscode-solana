@@ -1,10 +1,10 @@
 import { ExtensionContext } from "vscode";
 import commands from "./commands";
-import checkInstallAnchor from "./helpers/install";
+import checkInstallAnchor, { checkInstallSolana } from "./helpers/install";
 import { registerViews } from "./views";
 
 export async function activate(context: ExtensionContext) {
-  // check and install anchor
+  checkInstallSolana();
   checkInstallAnchor();
   registerViews();
 
