@@ -24,6 +24,7 @@ export const installAvm = async () => vscode.window.withProgress({
   }
 });
 
+export const avmUse = async (version: string) => spawnChan('avm', ['use', version], 'avm list', '', true);
 
 export const installAnchorUsingAvm = async () => {
   try {
@@ -49,6 +50,7 @@ export const installAnchorUsingAvm = async () => {
       cancellable: false
     }, async (progress, token) => {
       const isInstalled = await spawnChan('avm', ['install', version], `avm install ${version}`);
+      await avmUse(version);
       return Promise.resolve(isInstalled);
     });
   } catch (err) {
