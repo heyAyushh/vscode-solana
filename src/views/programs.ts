@@ -2,7 +2,7 @@ import {
   TreeDataProvider,
   EventEmitter, Event, TreeItem,
   window, TreeItemCollapsibleState,
-  Command, commands, workspace
+  Command, commands, workspace, Uri
 } from 'vscode';
 import { readFileSync, accessSync } from 'fs';
 import { join } from 'path';
@@ -126,5 +126,5 @@ export const registerProgramView = () => {
   commands.registerCommand('vscode-anchor-view-programs.build', () => commands.executeCommand('vscode-anchor.build'));
   commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
   // @ts-expect-error
-  commands.registerCommand('vscode-anchor-view-programs.editEntry', (prgName: string) => commands.executeCommand('open', Uri.joinPath(workspace.workspaceFolders[0].uri, 'programs', prgName, 'src', 'lib.rs')));
+  commands.registerCommand('vscode-anchor-view-programs.editEntry', (prgName: string) => commands.executeCommand('vscode.open', Uri.joinPath(workspace.workspaceFolders[0].uri, 'programs', prgName, 'src', 'lib.rs')));
 };
