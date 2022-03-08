@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import { spawn } from "./promisify_child_process";
 import { WORKSPACE_PATH } from "../config";
 import * as vscode from "vscode";
@@ -36,6 +36,15 @@ export const spawnChan = async (
 ) => {
   try {
     let errorNotifiedFlag = false;
+    const home = execSync("echo $HOME");
+
+    if (cmd === 'solana'){
+      cmd = `${home.toString().replace('\n', '')}/.local/share/solana/install/active_release/bin/solana`;
+    }
+    if (cmd === 'anchor'){
+      cmd = `${home.toString().replace('\n', '')}/.cargo/bin/anchor`;
+    }
+
     const cexe = spawn(`${cmd}`, args, {
       cwd,
       shell: true,
