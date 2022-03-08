@@ -4,9 +4,9 @@ import checkInstallAnchor, { checkInstallSolana } from "./helpers/install";
 import { registerViews } from "./views";
 
 export async function activate(context: ExtensionContext) {
-  checkInstallSolana();
-  checkInstallAnchor();
   registerViews();
+  await checkInstallSolana();
+  await checkInstallAnchor();
 
   // register commands
   context.subscriptions.push(...commands);

@@ -9,7 +9,8 @@ export default async function checkInstallAnchor() {
     await spawnChan('anchor', ['--version'], 'anchor version', '', true);
   } catch (err) {
     // if anchor is not installed
-    if (err instanceof Error && err?.message?.includes("not found")) {
+    if (err instanceof Error &&
+      (err?.message?.includes("not found") || err?.message?.includes("code 127"))) {
       // ask user to install anchor
       const selection = await vscode
         .window
