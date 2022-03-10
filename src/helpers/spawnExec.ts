@@ -3,6 +3,7 @@ import { spawn } from "./promisify_child_process";
 import { WORKSPACE_PATH } from "../config";
 import * as vscode from "vscode";
 import chan, { appendChan } from "./outputChannel";
+import { parseCommand } from "./platform";
 
 /**
 * probably here to be obselete who knows?
@@ -26,6 +27,7 @@ export const execShell = (cmd: string) =>
 * @param cmd - command to be executed
 * @param registeredAs - name of the command registered in VSCode extension
 *
+* @returns Promise<ChildProcessOutput | null | undefined>
 */
 export const spawnChan = async (
   cmd: string,
@@ -36,14 +38,7 @@ export const spawnChan = async (
 ) => {
   try {
     let errorNotifiedFlag = false;
-    const home = execSync("echo $HOME");
-
-    if (cmd === 'solana'){
-      cmd = `${home.toString().replace('\n', '')}/.local/share/solana/install/active_release/bin/solana`;
-    }
-    if (cmd === 'anchor'){
-      cmd = `${home.toString().replace('\n', '')}/.cargo/bin/anchor`;
-    }
+    cmd = parseCommand(cmd);
 
     const cexe = spawn(`${cmd}`, args, {
       cwd,
