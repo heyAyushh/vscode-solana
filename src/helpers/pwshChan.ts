@@ -38,3 +38,5 @@ export default async function pwshChan(
     await ps.dispose();
   }
 };
+
+export const pwshExec = (cmd: string) => PowerShell.$`${cmd}`;
