@@ -246,7 +246,17 @@
         "command": "vscode-anchor.build",
         "key": "Ctrl+Alt+B"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "vscode-anchor",
+      "properties": {
+        "vscode-anchor.solanaBinPath": {
+          "type": ["string", "null"],
+          "scope":"machine-overridable",
+          "description": "Path to solana binary executables."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
