@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import chan, { appendChan } from "./outputChannel";
+import { isMac } from "./platform";
 import { spawnChan } from "./spawnExec";
 
 export const avmList = async () => spawnChan('avm', ['list'], 'avm list', '', true);
@@ -49,7 +50,10 @@ export const installAnchorUsingAvm = async () => {
       title: `Installing Anchor ⚓ CLI ${version}...`,
       cancellable: false
     }, async (progress, token) => {
-      const isInstalled = await spawnChan('avm', ['install', version], `avm install ${version}`);
+      if(!isMac){
+        await spawnChan('sudo', ['apt-get', 'install', '-y', 'libudev-dev'], `Install anchor dependencies`);
+      }
+      const isInstalled = await spawnChan('avm', ['install', version], `Installing Anchor CLI ${version} using avm`);
       await avmUse(version);
       return Promise.resolve(isInstalled);
     });

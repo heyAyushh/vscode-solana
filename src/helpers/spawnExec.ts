@@ -1,6 +1,6 @@
 import { exec, execSync } from "child_process";
 import { spawn } from "./promisify_child_process";
-import { WORKSPACE_PATH } from "../config";
+import { getSolanaPath, WORKSPACE_PATH } from "../config";
 import * as vscode from "vscode";
 import chan, { appendChan } from "./outputChannel";
 import { parseCommand } from "./platform";
@@ -43,6 +43,11 @@ export const spawnChan = async (
     const cexe = spawn(`${cmd}`, args, {
       cwd,
       shell: true,
+      env: {
+        ...process.env,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        PATH: `${process.env.PATH}:${getSolanaPath()}`
+      }
     });
 
     if (!cexe.stdout || !cexe.stderr) {
