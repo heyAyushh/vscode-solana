@@ -4,7 +4,7 @@ import { anchorVerify } from "./verify";
 import { anchorInit } from "./scaffold";
 import { anchorNew } from "./new";
 import { anchorDeploy } from "./deploy";
-import { anchorInstall } from "./install";
+import { anchorInstall, solanaInstall } from "./install";
 import { anchorUpgrade } from "./upgrade";
 import { anchorAnalyze } from "./analyze";
 import { anchorHelp } from "./help";
@@ -17,6 +17,7 @@ const commands = [
   anchorHelp(),
   anchorInit(),
   anchorInstall(),
+  solanaInstall(),
   anchorNew(),
   anchorRemoveDockerImage(),
   anchorTest(),
