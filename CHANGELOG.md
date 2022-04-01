@@ -1,8 +1,27 @@
 # Change Log
   
 All notable changes to the 'vscode-anchor' extension will be documented in this file.  
+  
+## Version 0.2.6 [current]  
+### What's Changed
+* release candidate v0.2.6 by @heyAyushh in https://github.com/heyAyushh/vscode-anchor/pull/26
+* setup one click environments with gitpod and github codespaces
+* vscode-anchor extension is now also published to https://github.com/eclipse/openvsx,  
+this means now it is microsoft vendor free and can be used in environments where ovsx is supported
 
-## Version 0.2.4 [current]  
+### Added  
+- gitpod one click button in readme
+- Consent to Install Solana
+- vscode-anchor custom solana binaries path in settings
+- anchor install and use installed version automatically
+
+### Bug Fixes
+- Program Item default action was not working #22 
+- extension size has been reduced by 90% 
+
+**Full Changelog**: https://github.com/heyAyushh/vscode-anchor/compare/v0.2.4...v0.2.6
+
+## Version 0.2.4 
 ### Added  
 - Support for Anchor Version Manager (avm)
 - Scaffolding projects Improvements #12
