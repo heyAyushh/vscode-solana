@@ -84,6 +84,10 @@
         "title": "Anchor: Install CLI"
       },
       {
+        "command": "vscode-anchor.solanaInstall",
+        "title": "Anchor: Install Solana"
+      },
+      {
         "command": "vscode-anchor.new",
         "title": "Anchor: New Program (in same workspace)"
       },
