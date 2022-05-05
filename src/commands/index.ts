@@ -4,7 +4,7 @@ import { anchorVerify } from "./verify";
 import { anchorInit } from "./scaffold";
 import { anchorNew } from "./new";
 import { anchorDeploy } from "./deploy";
-import { anchorInstall, solanaInstall } from "./install";
+import { anchorInstall, solanaInstall, avmInstall } from "./install";
 import { anchorUpgrade } from "./upgrade";
 import { anchorAnalyze } from "./analyze";
 import { anchorHelp } from "./help";
@@ -24,6 +24,7 @@ const commands = [
   anchorTestLocalValidator(),
   anchorUpgrade(),
   anchorVerify(),
+  avmInstall(),
 ];
 
-export default commands;
+  export default commands;
