@@ -1,6 +1,6 @@
 # Change Log
   
-All notable changes to the 'vscode-anchor' extension will be documented in this file.  
+All notable changes to the 'solana' extension will be documented in this file.  
 
 ## Version 0.2.4 [current]  
 ### Added  

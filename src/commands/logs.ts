@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { EXT_NAME } from "../config";
+import { EXT_NAME } from "../constants";
 import chan from "../helpers/outputChannel";
 
 export const clearLogs = () => vscode.commands.registerCommand(

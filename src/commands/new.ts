@@ -1,6 +1,6 @@
 import { spawnChan } from "../helpers/spawnExec";
 import * as vscode from 'vscode';
-import { EXT_NAME } from "../config";
+import { EXT_NAME } from "../constants";
 
 const anchorNew = () => vscode.commands.registerCommand(
   `${EXT_NAME}.new`,

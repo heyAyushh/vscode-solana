@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { EXT_NAME } from "../config";
+import { EXT_NAME } from "../constants";
 import chan from "../helpers/outputChannel";
 import { checkAvm, installAnchorUsingAvm, installAvm } from "../helpers/avm";
 import { checkInstallSolana } from "../helpers/install";

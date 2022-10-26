@@ -1,6 +1,7 @@
 import { spawnChan } from "../helpers/spawnExec";
 import * as vscode from 'vscode';
-import { EXT_NAME } from "../config";
+import { EXT_NAME } from "../constants";
+import { solPgMode } from "../helpers/config";
 
 const anchorDeploy = () => vscode.commands.registerCommand(
   `${EXT_NAME}.deploy`,
@@ -10,7 +11,11 @@ const anchorDeploy = () => vscode.commands.registerCommand(
       title: "Deploying Anchor ⚓ Program ...",
       cancellable: false
     }, async (progress, token) => {
-      spawnChan('anchor', ['deploy'], 'deploy');
+      if(solPgMode()){
+
+      } else {
+        spawnChan('anchor', ['deploy'], 'deploy');
+      }
     });
   }
 );

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { EXT_NAME } from "../config";
+import { EXT_NAME } from "../constants";
 
 export const anchorHelp = () => vscode.commands.registerCommand(
   `${EXT_NAME}.help`,

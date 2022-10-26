@@ -3,7 +3,7 @@
 // import { posix } from 'path';
 import * as vscode from 'vscode';
 import { spawnChan } from "../helpers/spawnExec";
-import { EXT_NAME } from "../config";
+import { EXT_NAME } from "../constants";
 
 const anchorUpgrade = () => vscode.commands.registerCommand(
   `${EXT_NAME}.upgrade`,

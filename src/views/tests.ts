@@ -48,7 +48,7 @@ export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
 
       const toTst = (tstName: string): TestItem => {
         return new TestItem(tstName, vscode.TreeItemCollapsibleState.None, {
-          command: 'vscode-anchor-view-tests.editEntry',
+          command: 'solana-view-tests.editEntry',
           title: '',
           arguments: [tstName]
         });
@@ -100,15 +100,15 @@ export const registerTestView = () => {
 
   if (rootPath) {
     const testsProvider = new TestsProvider(rootPath);
-    vscode.window.registerTreeDataProvider('vscode-anchor-view-tests', testsProvider);
-    vscode.commands.registerCommand('vscode-anchor-view-tests.refreshEntry', () => testsProvider.refresh());
-    vscode.commands.registerCommand('vscode-anchor-view-tests.test', () => vscode.commands.executeCommand(`vscode-anchor.test`));
+    vscode.window.registerTreeDataProvider('solana-view-tests', testsProvider);
+    vscode.commands.registerCommand('solana-view-tests.refreshEntry', () => testsProvider.refresh());
+    vscode.commands.registerCommand('solana-view-tests.test', () => vscode.commands.executeCommand(`solana.test`));
     vscode.commands.registerCommand(
-      'vscode-anchor-view-tests.skipLocalValidator',
-      () => vscode.commands.executeCommand(`vscode-anchor.testAgainstLocalValidator`)
+      'solana-view-tests.skipLocalValidator',
+      () => vscode.commands.executeCommand(`solana.testAgainstLocalValidator`)
     );
     // @ts-expect-error
-    vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (fileName: string) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', fileName)));
-    // vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (node: TestItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', node.fileName)));
+    vscode.commands.registerCommand('solana-view-tests.editEntry', (fileName: string) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', fileName)));
+    // vscode.commands.registerCommand('solana-view-tests.editEntry', (node: TestItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', node.fileName)));
   }
 };

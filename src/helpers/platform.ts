@@ -1,7 +1,7 @@
 // parse command to default binary paths in all environments
 
 import { execSync } from "child_process";
-import { getSolanaPath, home } from "../config";
+import { getSolanaPath, home } from "../constants";
 
 export const isMac = process.platform === "darwin";
 export const isLinux = process.platform === "linux";

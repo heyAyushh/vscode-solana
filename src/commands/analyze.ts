@@ -1,6 +1,6 @@
 import { spawnChan } from "../helpers/spawnExec";
 import * as vscode from 'vscode';
-import { EXT_NAME, WORKSPACE_PATH } from "../config";
+import { EXT_NAME, WORKSPACE_PATH } from "../constants";
 import chan, { appendChan } from "../helpers/outputChannel";
 import path = require("path");
 import { getDirectories } from "../helpers/util";

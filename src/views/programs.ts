@@ -66,7 +66,7 @@ export class ProgramsProvider implements TreeDataProvider<ProgramItem> {
 
       const toPrgm = (moduleName: string, version: string): ProgramItem => {
         return new ProgramItem(moduleName, version, TreeItemCollapsibleState.None, {
-          command: 'vscode-anchor-view-programs.editEntry',
+          command: 'solana-view-programs.editEntry',
           title: '',
           arguments: [moduleName]
         });
@@ -120,11 +120,12 @@ export const registerProgramView = () => {
 
   const programsProvider = new ProgramsProvider(rootPath);
 
-  window.registerTreeDataProvider('vscode-anchor-view-programs', programsProvider);
-  commands.registerCommand('vscode-anchor-view-programs.refreshEntry', () => programsProvider.refresh());
-  commands.registerCommand('vscode-anchor-view-programs.addEntry', () => commands.executeCommand('vscode-anchor.new'));
-  commands.registerCommand('vscode-anchor-view-programs.build', () => commands.executeCommand('vscode-anchor.build'));
-  commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
+  window.registerTreeDataProvider('solana-view-programs', programsProvider);
+  commands.registerCommand('solana-view-programs.refreshEntry', () => programsProvider.refresh());
+  commands.registerCommand('solana-view-programs.addEntry', () => commands.executeCommand('solana.new'));
+  commands.registerCommand('solana-view-programs.build', () => commands.executeCommand('solana.build'));
+  commands.registerCommand('solana-view-programs.deploy', () => commands.executeCommand('solana.deploy'));
+  commands.registerCommand('solana-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
   // @ts-expect-error
-  commands.registerCommand('vscode-anchor-view-programs.editEntry', (prgName: string) => commands.executeCommand('vscode.open', Uri.joinPath(workspace.workspaceFolders[0].uri, 'programs', prgName, 'src', 'lib.rs')));
+  commands.registerCommand('solana-view-programs.editEntry', (prgName: string) => commands.executeCommand('vscode.open', Uri.joinPath(workspace.workspaceFolders[0].uri, 'programs', prgName, 'src', 'lib.rs')));
 };
