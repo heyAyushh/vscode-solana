@@ -8,7 +8,22 @@ export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TestItem | undefined | void> = new vscode.EventEmitter<TestItem | undefined | void>();
   readonly onDidChangeTreeData: vscode.Event<TestItem | undefined | void> = this._onDidChangeTreeData.event;
 
+  private fileWatcher: vscode.FileSystemWatcher | undefined;
+
   constructor(private workspaceRoot: string | undefined) {
+    this.setupFileWatcher();
+  }
+
+  private setupFileWatcher() {
+    if (this.workspaceRoot) {
+      this.fileWatcher = vscode.workspace.createFileSystemWatcher(
+        new vscode.RelativePattern(this.workspaceRoot, 'tests/**/*.[jt]s')
+      );
+
+      this.fileWatcher.onDidChange(() => this.refresh());
+      this.fileWatcher.onDidCreate(() => this.refresh());
+      this.fileWatcher.onDidDelete(() => this.refresh());
+    }
   }
 
   refresh(): void {
@@ -32,11 +47,9 @@ export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
       if (this.pathExists(testsPath)) {
         return Promise.resolve(this.getTestItems(testsPath));
       } else {
-        // vscode.window.showInformationMessage('Workspace has no tests folder');
         return Promise.resolve([]);
       }
     }
-
   }
 
   /**
@@ -71,6 +84,28 @@ export class TestsProvider implements vscode.TreeDataProvider<TestItem> {
 
     return true;
   }
+
+  dispose() {
+    if (this.fileWatcher) {
+      this.fileWatcher.dispose();
+    }
+  }
+
+  public registerCommands() {
+    vscode.commands.registerCommand('vscode-anchor-view-tests.refreshEntry', () => this.refresh());
+    vscode.commands.registerCommand('vscode-anchor-view-tests.test', () => vscode.commands.executeCommand(`vscode-anchor.test`));
+    vscode.commands.registerCommand(
+      'vscode-anchor-view-tests.skipLocalValidator',
+      () => vscode.commands.executeCommand(`vscode-anchor.testAgainstLocalValidator`)
+    );
+    vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (fileName: string) => {
+      if (typeof fileName === 'string' && vscode.workspace.workspaceFolders) {
+        vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', fileName));
+      } else {
+        vscode.window.showErrorMessage('Invalid file name or no workspace folder');
+      }
+    });
+  }
 }
 
 export class TestItem extends vscode.TreeItem {
@@ -93,22 +128,3 @@ export class TestItem extends vscode.TreeItem {
 
   contextValue = 'test';
 }
-
-export const registerTestView = () => {
-  const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
-    ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
-
-  if (rootPath) {
-    const testsProvider = new TestsProvider(rootPath);
-    vscode.window.registerTreeDataProvider('vscode-anchor-view-tests', testsProvider);
-    vscode.commands.registerCommand('vscode-anchor-view-tests.refreshEntry', () => testsProvider.refresh());
-    vscode.commands.registerCommand('vscode-anchor-view-tests.test', () => vscode.commands.executeCommand(`vscode-anchor.test`));
-    vscode.commands.registerCommand(
-      'vscode-anchor-view-tests.skipLocalValidator',
-      () => vscode.commands.executeCommand(`vscode-anchor.testAgainstLocalValidator`)
-    );
-    // @ts-expect-error
-    vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (fileName: string) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', fileName)));
-    // vscode.commands.registerCommand('vscode-anchor-view-tests.editEntry', (node: TestItem) => vscode.commands.executeCommand('vscode.open', vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, 'tests', node.fileName)));
-  }
-};

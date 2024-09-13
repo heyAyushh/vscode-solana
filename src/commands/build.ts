@@ -14,7 +14,7 @@ const anchorBuild = () => vscode.commands.registerCommand(
       title: "Building Anchor ⚓ Program ...",
       cancellable: false
     }, async (progress, token) => {
-      await spawnChan('anchor', ['build'], 'build');
+      await spawnChan('anchor', ['build'], 'build', undefined, false, true, progress);
     });
   }
 );

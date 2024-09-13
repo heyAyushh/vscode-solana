@@ -1,16 +1,27 @@
-import { ExtensionContext } from "vscode";
+import { ExtensionContext, Disposable } from "vscode";
 import commands from "./commands";
-import checkInstallAnchor, { checkInstallSolana } from "./helpers/install";
+import { checkCliInstalled } from "./helpers/install";
 import { registerViews } from "./views";
 
-export async function activate(context: ExtensionContext) {
-  registerViews();
-  await checkInstallSolana();
-  await checkInstallAnchor();
+let disposables: Disposable[] = [];
 
-  // register commands
-  context.subscriptions.push(...commands);
+export async function activate(context: ExtensionContext) {
+  // Register views and store disposables
+  disposables = disposables.concat(registerViews(context));
+  
+  // Check for CLI installations
+  await checkCliInstalled('solana');
+  await checkCliInstalled('anchor');
+
+  // Register commands and store disposables
+  disposables = disposables.concat(commands);
+
+  // Add all disposables to the context subscriptions
+  context.subscriptions.push(...disposables);
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {
+  // Dispose of all registered disposables
+  disposables.forEach(disposable => disposable.dispose());
+  disposables = [];
+}

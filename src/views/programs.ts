@@ -1,21 +1,39 @@
+import * as vscode from 'vscode';
 import {
   TreeDataProvider,
   EventEmitter, Event, TreeItem,
   window, TreeItemCollapsibleState,
-  Command, commands, workspace, Uri
+  commands, workspace, FileSystemWatcher,
+  RelativePattern, Uri
 } from 'vscode';
 import { readFileSync, accessSync } from 'fs';
 import { join } from 'path';
 import { getDirectories } from "../helpers/util";
 import { parse } from '@ltd/j-toml';
 import { anchorBuildVerifiableItem } from "../commands/build";
+import path = require('path');
+import { copyHashToClipboard } from '../commands/verify';
 
 export class ProgramsProvider implements TreeDataProvider<ProgramItem> {
-
   private _onDidChangeTreeData: EventEmitter<ProgramItem | undefined | void> = new EventEmitter<ProgramItem | undefined | void>();
   readonly onDidChangeTreeData: Event<ProgramItem | undefined | void> = this._onDidChangeTreeData.event;
 
+  private fileWatcher: FileSystemWatcher | undefined;
+
   constructor(private workspaceRoot: string | undefined) {
+    this.setupFileWatcher();
+  }
+
+  private setupFileWatcher() {
+    if (this.workspaceRoot) {
+      this.fileWatcher = workspace.createFileSystemWatcher(
+        new RelativePattern(this.workspaceRoot, '**/Cargo.toml')
+      );
+
+      this.fileWatcher.onDidChange(() => this.refresh());
+      this.fileWatcher.onDidCreate(() => this.refresh());
+      this.fileWatcher.onDidDelete(() => this.refresh());
+    }
   }
 
   refresh(): void {
@@ -39,16 +57,11 @@ export class ProgramsProvider implements TreeDataProvider<ProgramItem> {
       if (this.pathExists(programsPath)) {
         return Promise.resolve(this.getProgramItems(programsPath));
       } else {
-        // window.showInformationMessage('Workspace has no programs folder');
         return Promise.resolve([]);
       }
     }
-
   }
 
-  /**
-   * Given the path to programs folder, return all directories with Carto.toml version.
-   */
   private getProgramItems(programsPath: string): ProgramItem[] {
     if (this.pathExists(programsPath)) {
       const programs = getDirectories(programsPath);
@@ -64,18 +77,7 @@ export class ProgramsProvider implements TreeDataProvider<ProgramItem> {
         return { ...acc, ...cur };
       });
 
-      const toPrgm = (moduleName: string, version: string): ProgramItem => {
-        return new ProgramItem(moduleName, version, TreeItemCollapsibleState.None, {
-          command: 'vscode-anchor-view-programs.editEntry',
-          title: '',
-          arguments: [moduleName]
-        });
-      };
-
-      const prgms = programs ?
-        programs.map(prgm => toPrgm(prgm, programsV[prgm]))
-        : [];
-      return prgms;
+      return programs.map(program => new ProgramItem(program, programsV[program]));
     } else {
       return [];
     }
@@ -90,41 +92,68 @@ export class ProgramsProvider implements TreeDataProvider<ProgramItem> {
 
     return true;
   }
+
+  public registerCommands() {
+    commands.registerCommand('vscode-anchor-view-programs.refreshEntry', () => this.refresh());
+    commands.registerCommand('vscode-anchor-view-programs.addEntry', () => commands.executeCommand('vscode-anchor.new'));
+    commands.registerCommand('vscode-anchor-view-programs.build', () => commands.executeCommand('vscode-anchor.build'));
+    commands.registerCommand('vscode-anchor-view-programs.editEntry', (prg: ProgramItem | string) => openProgramFile(prg));
+    commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
+    commands.registerCommand('vscode-anchor-view-programs.copyHash', async (prg: string) => copyHashToClipboard(prg));
+  }
+
+  dispose() {
+    if (this.fileWatcher) {
+      this.fileWatcher.dispose();
+    }
+  }
 }
 
 export class ProgramItem extends TreeItem {
-
   constructor(
     public readonly label: string,
-    private readonly version: string,
-    public readonly collapsibleState: TreeItemCollapsibleState,
-    public readonly command?: Command
+    private readonly version: string
   ) {
-    super(label, collapsibleState);
+    super(label, TreeItemCollapsibleState.None);
 
     this.tooltip = `${this.label}-${this.version}`;
     this.description = this.version;
+
+    this.command = {
+      command: 'vscode-anchor-view-programs.editEntry',
+      title: 'Open Program',
+      arguments: [this]
+    };
+
+    this.contextValue = 'program';
   }
-
-  // iconPath = {
-  //   light: join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-  //   dark: join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-  // };
-
-  contextValue = 'program';
 }
 
-export const registerProgramView = () => {
-  const rootPath = (workspace.workspaceFolders && (workspace.workspaceFolders.length > 0))
-    ? workspace.workspaceFolders[0].uri.fsPath : undefined;
+const openProgramFile = (item: string | ProgramItem) => {
+  let programName: string;
+  if (typeof item === 'string') {
+    programName = item;
+  } else if (item instanceof ProgramItem) {
+    programName = item.label;
+  } else {
+    window.showErrorMessage('Invalid program item');
+    return;
+  }
 
-  const programsProvider = new ProgramsProvider(rootPath);
+  if (!workspace.workspaceFolders || workspace.workspaceFolders.length === 0) {
+    window.showErrorMessage('No workspace folder is open');
+    return;
+  }
 
-  window.registerTreeDataProvider('vscode-anchor-view-programs', programsProvider);
-  commands.registerCommand('vscode-anchor-view-programs.refreshEntry', () => programsProvider.refresh());
-  commands.registerCommand('vscode-anchor-view-programs.addEntry', () => commands.executeCommand('vscode-anchor.new'));
-  commands.registerCommand('vscode-anchor-view-programs.build', () => commands.executeCommand('vscode-anchor.build'));
-  commands.registerCommand('vscode-anchor-view-programs.buildVerifiableItem', (prg: ProgramItem) => anchorBuildVerifiableItem(prg));
-  // @ts-expect-error
-  commands.registerCommand('vscode-anchor-view-programs.editEntry', (prgName: string) => commands.executeCommand('vscode.open', Uri.joinPath(workspace.workspaceFolders[0].uri, 'programs', prgName, 'src', 'lib.rs')));
+  const programPath = Uri.joinPath(workspace.workspaceFolders[0].uri, 'programs', programName, 'src', 'lib.rs');
+
+  workspace.openTextDocument(programPath).then(
+    document => {
+      window.showTextDocument(document);
+    },
+    error => {
+      console.error('Error opening file:', error);
+      window.showErrorMessage(`Unable to open file: ${programPath.fsPath}. Error: ${error.message}`);
+    }
+  );
 };

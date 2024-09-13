@@ -1,74 +1,77 @@
-import { exec, execSync } from "child_process";
-import { spawn } from "./promisify_child_process";
-import { getSolanaPath, WORKSPACE_PATH } from "../config";
+import { execa, ResultPromise } from 'execa';
 import * as vscode from "vscode";
 import chan, { appendChan } from "./outputChannel";
 import { parseCommand } from "./platform";
+import { WORKSPACE_PATH } from "../config";
+import { checkCliInstalled } from './install';
 
 /**
-* probably here to be obselete who knows?
-*
-* @param cmd - command to be executed
-*
-*/
-export const execShell = (cmd: string) =>
-  new Promise<string>((resolve, reject) => {
-    exec(cmd, (err, out) => {
-      if (err) {
-        reject(err);
-      }
-      return resolve(out);
-    });
-  });
-
-/**
-* uwu spawns command and stweams into anchor extension panewl
-*
-* @param cmd - command to be executed
-* @param registeredAs - name of the command registered in VSCode extension
-*
-* @returns Promise<ChildProcessOutput | null | undefined>
-*/
+ * Spawns a command and streams output into the Anchor extension panel
+ *
+ * @param cmd - command to be executed
+ * @param args - arguments for the command
+ * @param registeredAs - name of the command registered in VSCode extension
+ * @param cwd - current working directory
+ * @param quiet - if true, don't show notifications
+ * @param showOutput - if true, show output in the terminal
+ * @param progress - progress object for the progress bar
+ *
+ * @returns Promise<ExecaChildProcess | null>
+ */
 export const spawnChan = async (
   cmd: string,
   args: string[],
   registeredAs?: string,
   cwd: string = WORKSPACE_PATH(),
-  quiet: boolean = false
-) => {
+  quiet: boolean = false,
+  showOutput: boolean = false,
+  progress?: vscode.Progress<{ message?: string; increment?: number }>
+): Promise<ResultPromise | null> => {
   try {
-    let errorNotifiedFlag = false;
+    if (!await checkCliInstalled(cmd)) {
+      return null;
+    }
+
+    if (showOutput) {
+      chan.show(true);
+    }
+
+    if (progress) {
+      progress.report({ message: `Running ${registeredAs}...`, increment: 0 });
+    }
+
     cmd = parseCommand(cmd);
 
-    const cexe = spawn(`${cmd}`, args, {
+    const cexe = execa(cmd, args, {
       cwd,
-      shell: true,
       env: {
         ...process.env,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        PATH: `${process.env.PATH}:${getSolanaPath()}`
-      }
+        PATH: `${process.env.PATH}:${process.env.HOME}/.local/share/solana/install/active_release/bin`
+      },
+      shell: true,
     });
 
     if (!cexe.stdout || !cexe.stderr) {
       return null;
     }
 
-    cexe.stdout.on('data', (data: unknown) => {
-      chan.append(`[INFO : ${new Date().toLocaleTimeString()}] ${data}`);
-    });
-
-    cexe.stderr.on('data', (data: string) => {
-      if (!errorNotifiedFlag) {
-        errorNotifiedFlag = true;
-        chan.append(`[ERROR : ${new Date().toLocaleTimeString()}] ${data}`);
+    cexe.stdout.on('data', (data: Buffer) => {
+      chan.append(`[INFO : ${new Date().toLocaleTimeString()}] ${data.toString()}`);
+      if (progress) {
+        progress.report({ message: data.toString(), increment: 1 });
       }
-      chan.append(`${data}`);
     });
 
-    cexe.on('close', (code: unknown) => {
+    cexe.stderr.on('data', (data: Buffer) => {
+      chan.append(`[ERROR : ${new Date().toLocaleTimeString()}] ${data.toString()}`);
+    });
+
+    cexe.on('close', (code: number | null) => {
+      if (progress) {
+        progress.report({ message: `${registeredAs} completed`, increment: 100 });
+      }
       if (!quiet) {
-        if (!errorNotifiedFlag || code === 0) {
+        if (code === 0) {
           vscode.window.showInformationMessage(`Anchor ⚓: ${registeredAs} completed!`);
         } else {
           chan.show(true);
@@ -81,8 +84,11 @@ export const spawnChan = async (
     return cexe;
   } catch (err) {
     if (err instanceof Error) {
-      // vscode.window.showErrorMessage(err.message);
       appendChan('ERROR', err.message);
-    };
+      if (showOutput) {
+        chan.show(true);  // Show the channel if there's an error
+      }
+    }
+    return null;
   }
 };
